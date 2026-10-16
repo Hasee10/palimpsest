@@ -22,6 +22,13 @@ providers = [
     "anthropic>=0.107.1",
     "groq>=1.2.0",
     "voyageai>=0.3.7",
+]
+# Local BGE cross-encoder fallback, only needed when no LLM/embedder provider
+# offers a native reranker (e.g. Anthropic + Voyage with no OpenAI/Gemini key).
+# Pulls in torch + transformers (~GB-scale); kept separate from `providers`
+# because transformers' first-import lazy-module filesystem scan can take
+# minutes on Windows, and most setups never touch this fallback path.
+local-reranker = [
     "sentence-transformers>=3.2.1",
 ]
 

@@ -1373,11 +1373,13 @@ dependencies = [
 azure = [
     { name = "azure-identity" },
 ]
+local-reranker = [
+    { name = "sentence-transformers" },
+]
 providers = [
     { name = "anthropic" },
     { name = "google-genai" },
     { name = "groq" },
-    { name = "sentence-transformers" },
     { name = "voyageai" },
 ]
 
@@ -1405,11 +1407,11 @@ requires-dist = [
     { name = "openai", specifier = ">=2.41.0" },
     { name = "pydantic-settings", specifier = ">=2.0.0" },
     { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "sentence-transformers", marker = "extra == 'providers'", specifier = ">=3.2.1" },
+    { name = "sentence-transformers", marker = "extra == 'local-reranker'", specifier = ">=3.2.1" },
     { name = "typing-extensions", specifier = ">=4.0.0" },
     { name = "voyageai", marker = "extra == 'providers'", specifier = ">=0.3.7" },
 ]
-provides-extras = ["azure", "providers"]
+provides-extras = ["azure", "providers", "local-reranker"]
 
 [package.metadata.requires-dev]
 dev = [

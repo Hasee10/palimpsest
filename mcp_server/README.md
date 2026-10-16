@@ -11,6 +11,26 @@ This is an experimental Model Context Protocol (MCP) server implementation for G
 Graphiti's key functionality through the MCP protocol, allowing AI assistants to interact with Graphiti's knowledge
 graph capabilities.
 
+## This fork: palimpsest
+
+This fork documents a no-Docker, Windows, free-tier setup, plus an automation layer that keeps the graph in sync
+with a codebase without manual intervention. See [`automation/README.md`](automation/README.md) for the
+session-start hook, and the notes below for the two issues most likely to bite anyone replicating this on Windows.
+
+**Provider setup.** Configured for Gemini (LLM extraction) + Voyage AI (embeddings), both free-tier, with Neo4j
+Desktop as the graph backend instead of the default FalkorDB/Docker path. Groq was considered and ruled out — it
+has no embeddings API, so it can't cover the embedder role on its own.
+
+**The `sentence-transformers` trap.** The `providers` optional-dependency group used to bundle
+`sentence-transformers` alongside `google-genai`, `anthropic`, `groq`, and `voyageai`. On Windows, importing
+`sentence-transformers` transitively pulls in `transformers`, which builds a lazy-import map of its own module
+tree on first load by walking the filesystem — this took 90 seconds to 2.5 minutes locally, with zero output,
+indistinguishable from a genuine hang unless you bisect the import chain. `sentence-transformers` is only used as
+a local fallback reranker when no configured LLM/embedder provider has a native one (e.g. Anthropic + Voyage with
+no OpenAI/Gemini key) — most setups, including this one with Gemini configured, never touch that path. It's now
+split into its own `local-reranker` extra (see `pyproject.toml`), so `uv sync --extra providers` stays fast by
+default and you opt into the heavy fallback only if you actually need it.
+
 ## Features
 
 The Graphiti MCP server provides comprehensive knowledge graph capabilities:
